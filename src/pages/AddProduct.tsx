@@ -36,10 +36,14 @@ const AddProduct = () => {
       <div>
         <form action="">
           <CustomInput
-            type="text"
             label="Enter Product Title"
+            type="text"
             i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
           <div className="mb-3">
             <ReactQuill
@@ -52,10 +56,14 @@ const AddProduct = () => {
           </div>
 
           <CustomInput
-            type="number"
             label="Enter Product Price"
+            type="number"
             i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
           <select className="form-control py-3 mb-3" name="" id="">
             <option value="">Select Blog Category</option>
@@ -64,10 +72,14 @@ const AddProduct = () => {
             <option value="">Select Brand</option>
           </select>
           <CustomInput
-            type="number"
             label="Enter Product Quantity"
+            type="number"
             i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
           <select className="form-control py-3 mb-3" name="" id="">
             <option value="">Select Color</option>

@@ -16,10 +16,14 @@ const ForgotPassword = () => {
         </p>
         <form action="">
           <CustomInput
-            type="text"
             label="Email Address"
-            i_id="email"
+            type="text"
+            i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
 
           <button

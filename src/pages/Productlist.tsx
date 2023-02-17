@@ -1,6 +1,6 @@
 import React from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../interfaces/type";
+import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
 import { BiEdit } from "react-icons/bi";
 import { MdDeleteForever } from "react-icons/md";

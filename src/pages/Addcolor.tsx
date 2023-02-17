@@ -8,10 +8,14 @@ const AddColor = () => {
       <div>
         <form action="">
           <CustomInput
-            type="color"
             label="Enter color"
+            type="color"
             i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
           <button
             className="btn btn-success border-0 rounded-3 my-5"

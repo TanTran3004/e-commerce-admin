@@ -55,6 +55,10 @@ const AddBlog = () => {
               label="Enter Blog Title"
               i_id=""
               i_className=""
+              i_name=""
+              i_value=""
+              onChange={() => {}}
+              onBlur={() => {}}
             />
           </div>
           <select className="form-control py-3 mb-3" name="" id="">

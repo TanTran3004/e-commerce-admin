@@ -7,7 +7,16 @@ const AddBrand = () => {
       <h3 className="mb-4 title">Add Brand</h3>
       <div>
         <form action="">
-          <CustomInput type="text" label="Enter Brand" i_id="" i_className="" />
+          <CustomInput
+            type="text"
+            i_id=""
+            i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
+            label="Enter Brand"
+          />
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"

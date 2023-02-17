@@ -4,7 +4,7 @@ import { Column } from "@ant-design/plots";
 import { ColumnConfig } from "@ant-design/charts";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { DataTypeTable } from "../interfaces/type";
+import { DataTypeTable } from "../utils/type";
 
 interface CustomColumnConfig extends ColumnConfig {
   meta: {

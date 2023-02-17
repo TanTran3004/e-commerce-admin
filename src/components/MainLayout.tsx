@@ -1,27 +1,21 @@
 import React, { useState } from "react";
 
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
-import {
+  AiOutlineBgColors,
   AiOutlineDashboard,
   AiOutlineShoppingCart,
   AiOutlineUser,
-  AiOutlineBgColors,
 } from "react-icons/ai";
-import { SiBrandfolder } from "react-icons/si";
 import { BiCategoryAlt } from "react-icons/bi";
-import { HiClipboardList } from "react-icons/hi";
 import { FaBloggerB } from "react-icons/fa";
+import { HiClipboardList } from "react-icons/hi";
 import { ImBlog } from "react-icons/im";
 import { IoIosNotifications } from "react-icons/io";
-
+import { SiBrandfolder } from "react-icons/si";
+import { Link } from "react-router-dom";
 import { Layout, Menu, theme } from "antd";
-import { useNavigate, Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 const MainLayout: React.FC = () => {
@@ -178,24 +172,31 @@ const MainLayout: React.FC = () => {
               <div
                 role="button"
                 id="dropdownMenuLink"
-                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
                 <h5 className="mb-0">Tan Tran</h5>
                 <p className="mb-0">minhtan.pbc304@gmail.com</p>
               </div>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <a className="dropdown-item" href="#">
-                  Action
-                </a>
-
-                <a className="dropdown-item" href="#">
-                  Another action
-                </a>
-
-                <a className="dropdown-item" href="#">
-                  Something else here
-                </a>
+                <li>
+                  <Link
+                    className="dropdown-item py-1 mb-1"
+                    style={{ height: "auto", lineHeight: "20px" }}
+                    to="/"
+                  >
+                    View Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    className="dropdown-item py-1 mb-1"
+                    style={{ height: "auto", lineHeight: "20px" }}
+                    to="/"
+                  >
+                    Sign out
+                  </Link>
+                </li>
               </div>
             </div>
           </div>

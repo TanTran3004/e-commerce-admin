@@ -12,6 +12,10 @@ const AddBlogCat = () => {
             label="Enter Blog Category"
             i_id=""
             i_className=""
+            i_name=""
+            i_value=""
+            onChange={() => {}}
+            onBlur={() => {}}
           />
           <button
             className="btn btn-success border-0 rounded-3 my-5"
