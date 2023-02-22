@@ -108,12 +108,12 @@ const Dashboard = (props: DataTypeTable) => {
       dataIndex: "name",
     },
     {
-      title: "Product",
-      dataIndex: "product",
+      title: "Email",
+      dataIndex: "email",
     },
     {
-      title: "Status",
-      dataIndex: "status",
+      title: "Mobile",
+      dataIndex: "mobile",
     },
   ];
   const dataTable: DataTypeTable[] = [];
@@ -121,8 +121,8 @@ const Dashboard = (props: DataTypeTable) => {
     dataTable.push({
       key: i,
       name: `Edward King ${i}`,
-      product: 32,
-      status: `London, Park Lane no. ${i}`,
+      email: `London, Park Lane no. ${i}`,
+      mobile: `London, Park Lane no. ${i}`,
     });
   }
   return (

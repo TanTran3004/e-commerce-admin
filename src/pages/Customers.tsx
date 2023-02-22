@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
+import { CustomerState, CustomerTable } from "../utils/CustomerInterface";
 import type { ColumnsType } from "antd/es/table";
 import { AppDispatch } from "../app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { getUsers } from "../features/customers/customerSlice";
-const columns: ColumnsType<DataTypeTable> = [
+
+const columns: ColumnsType<CustomerTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -13,31 +14,40 @@ const columns: ColumnsType<DataTypeTable> = [
   {
     title: "Name",
     dataIndex: "name",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Product",
-    dataIndex: "product",
+    title: "Email",
+    dataIndex: "email",
   },
   {
-    title: "Status",
-    dataIndex: "status",
+    title: "Mobile",
+    dataIndex: "mobile",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    product: 32,
-    status: `London, Park Lane no. ${i}`,
-  });
-}
-const Customers = (props: DataTypeTable) => {
+
+const Customers = () => {
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
     // dispatch({ type: "customer/get-customers" });
     dispatch(getUsers());
   }, []);
+  const customerState = useSelector(
+    (state: { customer: CustomerState }) => state.customer.customers
+  );
+
+  const dataTable: CustomerTable[] = [];
+  for (let i = 0; i < customerState.length; i++) {
+    if (customerState[i].role !== "admin") {
+      dataTable.push({
+        key: i + 1,
+        name: `${customerState[i].firstName} ${customerState[i].lastName}`,
+        email: `${customerState[i].email}`,
+        mobile: `${customerState[i].mobile}`,
+      });
+    }
+  }
   return (
     <div>
       <h3 className="mb-4 title">Customers</h3>

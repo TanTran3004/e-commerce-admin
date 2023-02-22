@@ -12,12 +12,12 @@ const columns: ColumnsType<DataTypeTable> = [
     dataIndex: "name",
   },
   {
-    title: "Product",
-    dataIndex: "product",
+    title: "Email",
+    dataIndex: "email",
   },
   {
-    title: "Status",
-    dataIndex: "status",
+    title: "Mobile",
+    dataIndex: "mobile",
   },
 ];
 const dataTable: DataTypeTable[] = [];
@@ -25,8 +25,8 @@ for (let i = 0; i < 46; i++) {
   dataTable.push({
     key: i,
     name: `Edward King ${i}`,
-    product: 32,
-    status: `London, Park Lane no. ${i}`,
+    email: `London, Park Lane no. ${i}`,
+    mobile: `London, Park Lane no. ${i}`,
   });
 }
 const BrandList = (props: DataTypeTable) => {
