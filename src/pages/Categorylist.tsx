@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
 import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { getCategories } from "../features/pcategory/pcategorySlice";
+import { ProductCategoryTable } from "../utils/PcategoryInterface";
+import { Link } from "react-router-dom";
+import { BiEdit, BiTrash } from "react-icons/bi";
+const columns: ColumnsType<ProductCategoryTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -10,26 +16,40 @@ const columns: ColumnsType<DataTypeTable> = [
   {
     title: "Name",
     dataIndex: "name",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const CategoryList = (props: DataTypeTable) => {
+
+const CategoryList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getCategories());
+  }, []);
+  const categoryState = useSelector(
+    (state: RootState) => state.pCategory.categories
+  );
+  const dataTable: ProductCategoryTable[] = [];
+  for (let i = 0; i < categoryState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: `${categoryState[i].title}`,
+      action: (
+        <div>
+          <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Product Categories</h3>

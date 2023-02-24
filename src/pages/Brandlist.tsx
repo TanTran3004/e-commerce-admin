@@ -1,8 +1,13 @@
-import React from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useEffect } from "react";
+import { BiEdit, BiTrash } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { AppDispatch, RootState } from "../app/store";
+import { getBrands } from "../features/brand/brandSlice";
+import { BrandTable } from "../utils/BrandInterface";
+const columns: ColumnsType<BrandTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -10,26 +15,38 @@ const columns: ColumnsType<DataTypeTable> = [
   {
     title: "Name",
     dataIndex: "name",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const BrandList = (props: DataTypeTable) => {
+
+const BrandList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getBrands());
+  }, []);
+  const brandState = useSelector((state: RootState) => state.brand.brands);
+  const dataTable: BrandTable[] = [];
+  for (let i = 0; i < brandState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: `${brandState[i].title}`,
+      action: (
+        <div>
+          <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Brand List</h3>

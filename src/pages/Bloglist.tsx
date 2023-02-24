@@ -1,35 +1,59 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { getBlogs } from "../features/blogs/blogSlice";
+import { BlogTable } from "../utils/BlogInterface";
+import { Link } from "react-router-dom";
+import { BiEdit, BiTrash } from "react-icons/bi";
+const columns: ColumnsType<BlogTable> = [
   {
     title: "SNo",
     dataIndex: "key",
   },
   {
-    title: "Name",
-    dataIndex: "name",
+    title: "Title",
+    dataIndex: "title",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.title.length - b.title.length,
   },
   {
-    title: "Email",
-    dataIndex: "email",
+    title: "Category",
+    dataIndex: "category",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.category.length - b.category.length,
   },
   {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const BlogList = (props: DataTypeTable) => {
+
+const BlogList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getBlogs());
+  }, []);
+  const blogState = useSelector((state: RootState) => state.blog.blogs);
+  const dataTable: BlogTable[] = [];
+  for (let i = 0; i < blogState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      title: `${blogState[i].title}`,
+      category: `${blogState[i].category}`,
+      action: (
+        <div>
+          <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Blog List</h3>

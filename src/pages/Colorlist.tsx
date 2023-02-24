@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { ColorTable } from "../utils/ColorInterface";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { getColors } from "../features/color/colorSlice";
+import { Link } from "react-router-dom";
+import { BiEdit, BiTrash } from "react-icons/bi";
+const columns: ColumnsType<ColorTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -10,26 +15,38 @@ const columns: ColumnsType<DataTypeTable> = [
   {
     title: "Name",
     dataIndex: "name",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const ColorList = (props: DataTypeTable) => {
+
+const ColorList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getColors());
+  }, []);
+  const colorState = useSelector((state: RootState) => state.color.colors);
+  const dataTable: ColorTable[] = [];
+  for (let i = 0; i < colorState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: `${colorState[i].title}`,
+      action: (
+        <div>
+          <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Color List</h3>

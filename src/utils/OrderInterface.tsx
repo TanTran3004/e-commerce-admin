@@ -1,17 +1,17 @@
-export interface BrandState {
+export interface OrderState {
+  orders: Order[];
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
   message: object | string | null;
-  brands: Brand[];
 }
-interface Brand {
+interface Order {
   _id: string;
   title: string;
   updatedAt: string;
   __v?: number;
 }
-export interface BrandTable {
+export interface OrderTable {
   key: React.Key;
   name: string;
   action: JSX.Element;

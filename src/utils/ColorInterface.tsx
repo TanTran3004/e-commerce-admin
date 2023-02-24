@@ -1,17 +1,17 @@
-export interface BrandState {
+export interface ColorState {
+  colors: Color[];
   isLoading: boolean;
   isSuccess: boolean;
   isError: boolean;
   message: object | string | null;
-  brands: Brand[];
 }
-interface Brand {
+interface Color {
   _id: string;
   title: string;
   updatedAt: string;
   __v?: number;
 }
-export interface BrandTable {
+export interface ColorTable {
   key: React.Key;
   name: string;
   action: JSX.Element;
