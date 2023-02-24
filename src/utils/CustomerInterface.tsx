@@ -1,3 +1,5 @@
+import { Order } from "./OrderInterface";
+
 export interface CustomerTable {
   key: React.Key;
   name: string;
@@ -18,7 +20,9 @@ export interface AuthState {
   isError: boolean;
   user: UserState | null;
   message: object | string | null;
+  orders: Order[];
 }
+
 export interface CustomerState {
   isLoading: boolean;
   isSuccess: boolean;

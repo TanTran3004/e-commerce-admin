@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
+
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { getOrders } from "../features/auth/authSlice";
+import { OrderTable } from "../utils/OrderInterface";
+import { Link } from "react-router-dom";
+import { BiEdit, BiTrash } from "react-icons/bi";
+
+const columns: ColumnsType<OrderTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -12,24 +19,56 @@ const columns: ColumnsType<DataTypeTable> = [
     dataIndex: "name",
   },
   {
-    title: "Email",
-    dataIndex: "email",
+    title: "Product",
+    dataIndex: "product",
   },
   {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Amount",
+    dataIndex: "amount",
+  },
+  {
+    title: "Status",
+    dataIndex: "status",
+  },
+  {
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const Orders = (props: DataTypeTable) => {
+
+const Orders = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getOrders());
+  }, []);
+  const orderState = useSelector((state: RootState) => state.auth.orders);
+  const dataTable: OrderTable[] = [];
+  console.log("orderState: ", orderState);
+  for (let i = 0; i < orderState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: ` ${orderState[i].orderBy.firstName} ${orderState[i].orderBy.lastName}`,
+      status: `${orderState[i].orderStatus}`,
+      product: orderState[i].products.map((product: any, index: number) => {
+        return (
+          <React.Fragment key={index}>
+            <div>
+              <p>{product.product.title}</p>
+            </div>
+          </React.Fragment>
+        );
+      }),
+
+      amount: `${orderState[i].paymentIntent.amount}`,
+      action: (
+        <div>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Orders</h3>

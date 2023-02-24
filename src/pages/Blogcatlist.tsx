@@ -1,8 +1,13 @@
-import React from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useEffect } from "react";
+import { BiEdit, BiTrash } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { AppDispatch, RootState } from "../app/store";
+import { getBCategory } from "../features/blog-category/bCategorySlice";
+import { BlogCategoryTable } from "../utils/BcategoryInterface";
+const columns: ColumnsType<BlogCategoryTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -10,26 +15,41 @@ const columns: ColumnsType<DataTypeTable> = [
   {
     title: "Name",
     dataIndex: "name",
+    defaultSortOrder: "descend",
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
-    title: "Email",
-    dataIndex: "email",
-  },
-  {
-    title: "Mobile",
-    dataIndex: "mobile",
+    title: "Action",
+    dataIndex: "action",
   },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const BlogCatList = (props: DataTypeTable) => {
+
+const BlogCatList = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getBCategory());
+  }, []);
+  const bCategoryState = useSelector(
+    (state: RootState) => state.bCategory.bCategories
+  );
+
+  const dataTable: BlogCategoryTable[] = [];
+  for (let i = 0; i < bCategoryState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: `${bCategoryState[i].title}`,
+      action: (
+        <div>
+          <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link>
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Blog Categories</h3>

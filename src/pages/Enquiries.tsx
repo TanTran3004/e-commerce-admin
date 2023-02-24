@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Table } from "antd";
-import { DataTypeTable } from "../utils/type";
 import type { ColumnsType } from "antd/es/table";
-const columns: ColumnsType<DataTypeTable> = [
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../app/store";
+import { getEnquiries } from "../features/enquiry/enquirySlice";
+import { EnquiryTable } from "../utils/EnquiryInterface";
+import { Link } from "react-router-dom";
+import { BiEdit, BiTrash } from "react-icons/bi";
+const columns: ColumnsType<EnquiryTable> = [
   {
     title: "SNo",
     dataIndex: "key",
@@ -19,17 +24,51 @@ const columns: ColumnsType<DataTypeTable> = [
     title: "Mobile",
     dataIndex: "mobile",
   },
+  {
+    title: "Status",
+    dataIndex: "status",
+  },
+  {
+    title: "Action",
+    dataIndex: "action",
+  },
 ];
-const dataTable: DataTypeTable[] = [];
-for (let i = 0; i < 46; i++) {
-  dataTable.push({
-    key: i,
-    name: `Edward King ${i}`,
-    email: `London, Park Lane no. ${i}`,
-    mobile: `London, Park Lane no. ${i}`,
-  });
-}
-const Enquiries = (props: DataTypeTable) => {
+
+const Enquiries = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getEnquiries());
+  }, []);
+  const enquiryState = useSelector(
+    (state: RootState) => state.enquiry.enquires
+  );
+  const dataTable: EnquiryTable[] = [];
+  for (let i = 0; i < enquiryState.length; i++) {
+    dataTable.push({
+      key: i + 1,
+      name: `${enquiryState[i].name}`,
+      email: `${enquiryState[i].email}`,
+      mobile: `${enquiryState[i].mobile}`,
+      // status: `${enquiryState[i].status}`,
+      status: (
+        <div>
+          <select className="form-control form-select" name="" id="">
+            <option value="">Set Status</option>
+          </select>
+        </div>
+      ),
+      action: (
+        <div>
+          {/* <Link className="fs-3 text-danger" to="/edit">
+            <BiEdit />
+          </Link> */}
+          <Link className="ms-3 fs-3 text-danger" to="/delete">
+            <BiTrash />
+          </Link>
+        </div>
+      ),
+    });
+  }
   return (
     <div>
       <h3 className="mb-4 title">Enquiries</h3>

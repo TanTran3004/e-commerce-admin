@@ -5,14 +5,31 @@ export interface OrderState {
   isError: boolean;
   message: object | string | null;
 }
-interface Order {
-  _id: string;
-  title: string;
-  updatedAt: string;
-  __v?: number;
+
+interface OrderProduct {
+  product: {
+    title: string;
+  };
 }
+
+export interface Order {
+  id: string;
+  orderBy: {
+    firstName: string;
+    lastName: string;
+  };
+  orderStatus: string;
+  products: OrderProduct[];
+  paymentIntent: {
+    amount: number;
+  };
+}
+
 export interface OrderTable {
   key: React.Key;
   name: string;
+  product: React.ReactNode;
+  amount: string;
+  status: string;
   action: JSX.Element;
 }
