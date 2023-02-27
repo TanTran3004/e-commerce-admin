@@ -31,6 +31,10 @@ const columns: ColumnsType<OrderTable> = [
     dataIndex: "status",
   },
   {
+    title: "Date",
+    dataIndex: "date",
+  },
+  {
     title: "Action",
     dataIndex: "action",
   },
@@ -43,7 +47,7 @@ const Orders = () => {
   }, []);
   const orderState = useSelector((state: RootState) => state.auth.orders);
   const dataTable: OrderTable[] = [];
-  console.log("orderState: ", orderState);
+  console.log(orderState);
   for (let i = 0; i < orderState.length; i++) {
     dataTable.push({
       key: i + 1,
@@ -52,14 +56,14 @@ const Orders = () => {
       product: orderState[i].products.map((product: any, index: number) => {
         return (
           <React.Fragment key={index}>
-            <div>
-              <p>{product.product.title}</p>
-            </div>
+            <ul>
+              <li>{product.product.title}</li>
+            </ul>
           </React.Fragment>
         );
       }),
-
       amount: `${orderState[i].paymentIntent.amount}`,
+      date: new Date(orderState[i].createdAt).toLocaleString(),
       action: (
         <div>
           <Link className="ms-3 fs-3 text-danger" to="/delete">

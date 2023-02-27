@@ -23,6 +23,7 @@ export interface Order {
   paymentIntent: {
     amount: number;
   };
+  createdAt: string;
 }
 
 export interface OrderTable {
@@ -31,5 +32,16 @@ export interface OrderTable {
   product: React.ReactNode;
   amount: string;
   status: string;
+  date: string;
   action: JSX.Element;
+}
+export interface AddProductFields {
+  title: string;
+  desc: string;
+  price: number | string;
+  quantity: number | string;
+  category: string;
+  brand: string;
+  color: Array<string>;
+  [key: string]: number | string | any;
 }

@@ -49,7 +49,7 @@ const Login = () => {
         <h3 className="text-center title">Login</h3>
         <p className="text-center">Login to your account to continue.</p>
         <div className="error text-center">
-          {message.message == "Rejected" ? "You are not Admin" : ""}
+          {message.message === "Rejected" ? "You are not Admin" : ""}
         </div>
         <form action="" onSubmit={formik.handleSubmit}>
           <CustomInput

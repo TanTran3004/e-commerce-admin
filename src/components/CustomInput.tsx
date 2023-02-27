@@ -1,17 +1,34 @@
 import React from "react";
-import { FieldInputProps } from "formik";
+import { FieldInputProps, FormikErrors } from "formik";
 
+type validInputTypes =
+  | "text"
+  | "password"
+  | "number"
+  | "email"
+  | "tel"
+  | "search"
+  | "url"
+  | "date"
+  | "time"
+  | "datetime-local"
+  | "month"
+  | "week"
+  | "range"
+  | "color"
+  | "checkbox"
+  | "radio";
 interface InputProps {
-  type: string;
+  type: validInputTypes;
   label: string;
   i_id: string;
   i_name: string;
-  i_value: string;
+  i_value: string | number;
   i_className: string;
   onChange: FieldInputProps<any>["onChange"];
   onBlur: FieldInputProps<any>["onBlur"];
-  error?: string | boolean | undefined;
-  touched?: boolean | undefined;
+  error?: string[] | string | boolean | any | undefined;
+  touched?: boolean | any | undefined;
 }
 
 const CustomInput: React.FC<InputProps> = ({
@@ -26,6 +43,7 @@ const CustomInput: React.FC<InputProps> = ({
   error,
   touched,
 }) => {
+  const errorString = Array.isArray(error) ? error.join(", ") : error;
   return (
     <div className="form-floating mb-3">
       <input
@@ -43,7 +61,7 @@ const CustomInput: React.FC<InputProps> = ({
       <label htmlFor={i_id}>{label}</label>
       {error && touched && (
         <div className="invalid-feedback" style={{ display: "block" }}>
-          {error}
+          {errorString}
         </div>
       )}
     </div>
