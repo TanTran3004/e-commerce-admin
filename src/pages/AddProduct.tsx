@@ -4,7 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch, useSelector } from "react-redux";
 import Multiselect from "react-widgets/Multiselect";
-import "react-widgets/styles.css";
+// import "react-widgets/styles.css";
 import * as yup from "yup";
 import { AppDispatch, RootState } from "../app/store";
 import CustomInput from "../components/CustomInput";
@@ -13,6 +13,9 @@ import { getBrands } from "../features/brand/brandSlice";
 import { getColors } from "../features/color/colorSlice";
 import { AddProductFields } from "../utils/OrderInterface";
 import { createProduct } from "../features/product/productSlice";
+import Dropzone from "react-dropzone";
+import { deleteImage, uploadImage } from "../features/upload/uploadSlice";
+import { ImageState } from "../utils/UploadInterface";
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
   desc: yup.string().required("Description is required"),
@@ -25,6 +28,13 @@ const schema = yup.object().shape({
     .test(
       "color-required",
       "Color is required",
+      (value) => value && value.length > 0
+    ),
+  images: yup
+    .array()
+    .test(
+      "image-required",
+      "Image is required",
       (value) => value && value.length > 0
     ),
 });
@@ -61,7 +71,19 @@ const AddProduct = () => {
   const handleColorSelect = (values: ColorOption[]) => {
     setSelectedColors(values);
   };
+  // TODO: Get images from redux
+  const imgState = useSelector((state: RootState) => state.upload.images);
+  const [selectImages, setSelectImages] = useState<ImageState[]>([]);
+  const images: ImageState[] = imgState.map((img: any) => ({
+    url: img.url,
+    public_id: img.public_id,
+    asset_id: img.asset_id,
+  }));
+  console.log("images: ", images);
 
+  useEffect(() => {
+    // do something when imgState changes
+  }, [selectImages, selectedColors]);
   const formik = useFormik<AddProductFields>({
     initialValues: {
       title: "",
@@ -71,6 +93,7 @@ const AddProduct = () => {
       category: "",
       brand: "",
       color: [],
+      images: [],
     },
     validationSchema: schema,
     onSubmit: (values) => {
@@ -79,26 +102,7 @@ const AddProduct = () => {
       dispatch(createProduct(values));
     },
   });
-  // const { Dragger } = Upload;
-  // const props: UploadProps = {
-  //   name: "file",
-  //   multiple: true,
-  //   action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  //   onChange(info) {
-  //     const { status } = info.file;
-  //     if (status !== "uploading") {
-  //       console.log(info.file, info.fileList);
-  //     }
-  //     if (status === "done") {
-  //       message.success(`${info.file.name} file uploaded successfully.`);
-  //     } else if (status === "error") {
-  //       message.error(`${info.file.name} file upload failed.`);
-  //     }
-  //   },
-  //   onDrop(e) {
-  //     console.log("Dropped files", e.dataTransfer.files);
-  //   },
-  // };
+
   return (
     <div>
       <h3 className="mb-4 title">Add Product</h3>
@@ -204,18 +208,37 @@ const AddProduct = () => {
           {formik.errors.color && formik.touched.color && (
             <div className="error">{formik.errors.color}</div>
           )}
-          {/* <Dragger {...props}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibit from
-              uploading company data or other band files
-            </p>
-          </Dragger> */}
+          <div className="bg-white border-1 p-5 text-center">
+            <Dropzone
+              onDrop={(acceptedFiles) => dispatch(uploadImage(acceptedFiles))}
+            >
+              {({ getRootProps, getInputProps }) => (
+                <section>
+                  <div {...getRootProps()}>
+                    <input {...getInputProps()} />
+                    <p>
+                      Drag 'n' drop some files here, or click to select files
+                    </p>
+                  </div>
+                </section>
+              )}
+            </Dropzone>
+          </div>
+          <div className="showImage d-flex flex-wrap gap-3">
+            {imgState.map((img: any, index: number) => (
+              <div className="position-relative" key={index}>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dispatch(deleteImage(img.public_id));
+                  }}
+                  className="btn-close position-absolute"
+                  style={{ top: "10px", right: "10px" }}
+                ></button>
+                <img src={img.url} alt="" width={200} height={200} />
+              </div>
+            ))}
+          </div>
           <button
             className="btn btn-success border-0 rounded-3 my-5"
             type="submit"

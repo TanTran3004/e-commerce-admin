@@ -1,4 +1,5 @@
 import axios from "axios";
+import { config } from "../../utils/axiosConfig";
 import { baseUrl } from "../../utils/base_url";
 
 const getProducts = async () => {
@@ -8,7 +9,8 @@ const getProducts = async () => {
 const createProduct = async (productData: any) => {
   const response = await axios.post(
     `${baseUrl}product/create-product`,
-    productData
+    productData,
+    config
   );
   return response.data;
 };

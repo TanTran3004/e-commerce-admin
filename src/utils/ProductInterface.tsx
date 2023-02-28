@@ -25,15 +25,6 @@ interface Product {
   updatedAt: string;
   totalRating: string;
 }
-// export interface AddProductFields {
-//   title: string;
-//   desc: string;
-//   price: string;
-//   quantity: string;
-//   category: string;
-//   brand: string;
-//   color: string[];
-//  }
 
 export interface ProductTable {
   key: React.Key;
@@ -42,5 +33,6 @@ export interface ProductTable {
   price: string;
   category: string;
   color: string;
+
   action: JSX.Element;
 }

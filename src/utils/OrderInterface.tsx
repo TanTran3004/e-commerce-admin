@@ -42,6 +42,7 @@ export interface AddProductFields {
   quantity: number | string;
   category: string;
   brand: string;
-  color: Array<string>;
+  color: string[];
+  images: string[];
   [key: string]: number | string | any;
 }
