@@ -37,12 +37,17 @@ export interface OrderTable {
 }
 export interface AddProductFields {
   title: string;
-  desc: string;
+  description: string;
   price: number | string;
   quantity: number | string;
   category: string;
   brand: string;
   color: string[];
-  images: string[];
+  images: Image[];
   [key: string]: number | string | any;
+}
+export interface Image {
+  url: string;
+  public_id: string;
+  asset_id: string;
 }

@@ -17,7 +17,6 @@ const deleteImage = async (id: string): Promise<string[]> => {
     ...config,
     data: { id },
   };
-  console.log("deleteConfig: ", deleteConfig);
   const response = await axios.delete(
     ` ${baseUrl}upload/delete-image/${id}`,
     deleteConfig

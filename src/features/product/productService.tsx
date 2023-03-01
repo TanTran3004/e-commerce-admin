@@ -12,6 +12,7 @@ const createProduct = async (productData: any) => {
     productData,
     config
   );
+  console.log(response);
   return response.data;
 };
 

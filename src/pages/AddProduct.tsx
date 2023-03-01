@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,12 +13,12 @@ import { getBrands } from "../features/brand/brandSlice";
 import { getColors } from "../features/color/colorSlice";
 import { AddProductFields } from "../utils/OrderInterface";
 import { createProduct } from "../features/product/productSlice";
-import Dropzone from "react-dropzone";
+import Dropzone, { DropzoneState } from "react-dropzone";
 import { deleteImage, uploadImage } from "../features/upload/uploadSlice";
-import { ImageState } from "../utils/UploadInterface";
+import { Image } from "../utils/UploadInterface";
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
-  desc: yup.string().required("Description is required"),
+  description: yup.string().required("Description is required"),
   price: yup.number().required("Price is required"),
   category: yup.string().required("Category is required"),
   brand: yup.string().required("Brand is required"),
@@ -32,10 +32,12 @@ const schema = yup.object().shape({
     ),
   images: yup
     .array()
-    .test(
-      "image-required",
-      "Image is required",
-      (value) => value && value.length > 0
+    .min(1, "At least one image is required")
+    .of(
+      yup.object().shape({
+        public_id: yup.string().required(),
+        url: yup.string().required(),
+      })
     ),
 });
 
@@ -72,37 +74,73 @@ const AddProduct = () => {
     setSelectedColors(values);
   };
   // TODO: Get images from redux
-  const imgState = useSelector((state: RootState) => state.upload.images);
-  const [selectImages, setSelectImages] = useState<ImageState[]>([]);
-  const images: ImageState[] = imgState.map((img: any) => ({
-    url: img.url,
-    public_id: img.public_id,
-    asset_id: img.asset_id,
-  }));
-  console.log("images: ", images);
 
-  useEffect(() => {
-    // do something when imgState changes
-  }, [selectImages, selectedColors]);
+  const imgState = useSelector((state: RootState) => state.upload.images);
+  const [selectImages, setSelectImages] = useState<Image[]>([]);
+  const imgArr: Image[] = [];
+  imgState.forEach((img: any) => {
+    imgArr.push({
+      public_id: img.public_id,
+      url: img.url,
+      asset_id: img.asset_id,
+    });
+  });
+  console.log("imgArr", imgArr);
   const formik = useFormik<AddProductFields>({
     initialValues: {
       title: "",
-      desc: "",
+      description: "",
       price: "",
       quantity: "",
       category: "",
       brand: "",
       color: [],
-      images: [],
+      images: imgArr,
     },
     validationSchema: schema,
     onSubmit: (values) => {
-      console.log(values.color); // log the selected colors
       console.log(values);
       dispatch(createProduct(values));
     },
   });
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      dispatch(uploadImage(acceptedFiles))
+        .then((uploadedImages: any) => {
+          // Add the new images to the existing ones
+          const updatedImages = [...imgState, ...uploadedImages];
 
+          // Update the value of the images field in Formik
+          formik.setFieldValue("images", updatedImages);
+
+          // Update the imgState and selectImages variables
+          setSelectImages(updatedImages);
+        })
+        .catch((error) => {
+          console.log("Error uploading images:", error);
+        });
+    },
+    [dispatch, formik, imgState]
+  );
+
+  const handleDeleteImage = (public_id: string) => {
+    dispatch(deleteImage(public_id))
+      .then(() => {
+        // Remove the deleted image from the images array
+        const updatedImages: any = imgState.filter(
+          (image: any) => image.public_id !== public_id
+        );
+
+        // Update the value of the images field in Formik
+        formik.setFieldValue("images", updatedImages);
+
+        // Update the imgState and selectImages variables
+        setSelectImages(updatedImages);
+      })
+      .catch((error) => {
+        console.log("Error deleting image:", error);
+      });
+  };
   return (
     <div>
       <h3 className="mb-4 title">Add Product</h3>
@@ -127,12 +165,12 @@ const AddProduct = () => {
           <div className="">
             <ReactQuill
               theme="snow"
-              value={formik.values.desc}
-              onChange={formik.handleChange("desc")}
-              onBlur={formik.handleBlur("desc")}
+              value={formik.values.description}
+              onChange={formik.handleChange("description")}
+              onBlur={formik.handleBlur("description")}
             />
             <div className="error">
-              {formik.touched.desc && formik.errors.desc}
+              {formik.touched.description && formik.errors.description}
             </div>
           </div>
           <CustomInput
@@ -208,36 +246,36 @@ const AddProduct = () => {
           {formik.errors.color && formik.touched.color && (
             <div className="error">{formik.errors.color}</div>
           )}
-          <div className="bg-white border-1 p-5 text-center">
-            <Dropzone
-              onDrop={(acceptedFiles) => dispatch(uploadImage(acceptedFiles))}
-            >
-              {({ getRootProps, getInputProps }) => (
-                <section>
-                  <div {...getRootProps()}>
-                    <input {...getInputProps()} />
-                    <p>
-                      Drag 'n' drop some files here, or click to select files
-                    </p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
-          </div>
-          <div className="showImage d-flex flex-wrap gap-3">
-            {imgState.map((img: any, index: number) => (
-              <div className="position-relative" key={index}>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    dispatch(deleteImage(img.public_id));
-                  }}
-                  className="btn-close position-absolute"
-                  style={{ top: "10px", right: "10px" }}
-                ></button>
-                <img src={img.url} alt="" width={200} height={200} />
-              </div>
-            ))}
+          <div>
+            <div className="bg-white border-1 p-5 text-center">
+              <Dropzone onDrop={onDrop}>
+                {({ getRootProps, getInputProps }) => (
+                  <section>
+                    <div {...getRootProps()}>
+                      <input {...getInputProps()} />
+                      <p>
+                        Drag 'n' drop some files here, or click to select files
+                      </p>
+                    </div>
+                  </section>
+                )}
+              </Dropzone>
+            </div>
+            <div className="showImage d-flex flex-wrap gap-3">
+              {imgState.map((img: any, index: number) => (
+                <div className="position-relative" key={index}>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      dispatch(deleteImage(img.public_id));
+                    }}
+                    className="btn-close position-absolute"
+                    style={{ top: "10px", right: "10px" }}
+                  ></button>
+                  <img src={img.url} alt="" width={200} height={200} />
+                </div>
+              ))}
+            </div>
           </div>
           <button
             className="btn btn-success border-0 rounded-3 my-5"
