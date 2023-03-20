@@ -30,15 +30,15 @@ const schema = yup.object().shape({
       "Color is required",
       (value) => value && value.length > 0
     ),
-  images: yup
-    .array()
-    .min(1, "At least one image is required")
-    .of(
-      yup.object().shape({
-        public_id: yup.string().required(),
-        url: yup.string().required(),
-      })
-    ),
+  // images: yup
+  //   .array()
+  //   .min(1, "At least one image is required")
+  //   .of(
+  //     yup.object().shape({
+  //       public_id: yup.string().required(),
+  //       url: yup.string().required(),
+  //     })
+  //   ),
 });
 
 const AddProduct = () => {
@@ -73,8 +73,8 @@ const AddProduct = () => {
   const handleColorSelect = (values: ColorOption[]) => {
     setSelectedColors(values);
   };
-  // TODO: Get images from redux
 
+  // TODO: Get images from redux
   const imgState = useSelector((state: RootState) => state.upload.images);
   const [selectImages, setSelectImages] = useState<Image[]>([]);
   const imgArr: Image[] = [];
@@ -85,7 +85,7 @@ const AddProduct = () => {
       asset_id: img.asset_id,
     });
   });
-  console.log("imgArr", imgArr);
+  useEffect(() => {}, [selectedColors, selectImages]);
   const formik = useFormik<AddProductFields>({
     initialValues: {
       title: "",
@@ -108,11 +108,9 @@ const AddProduct = () => {
       dispatch(uploadImage(acceptedFiles))
         .then((uploadedImages: any) => {
           // Add the new images to the existing ones
-          const updatedImages = [...imgState, ...uploadedImages];
-
+          const updatedImages = [...imgState, ...uploadedImages.payload];
           // Update the value of the images field in Formik
           formik.setFieldValue("images", updatedImages);
-
           // Update the imgState and selectImages variables
           setSelectImages(updatedImages);
         })
@@ -165,9 +163,7 @@ const AddProduct = () => {
           <div className="">
             <ReactQuill
               theme="snow"
-              value={formik.values.description}
-              onChange={formik.handleChange("description")}
-              onBlur={formik.handleBlur("description")}
+              onChange={(value) => formik.setFieldValue("description", value)}
             />
             <div className="error">
               {formik.touched.description && formik.errors.description}

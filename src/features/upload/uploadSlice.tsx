@@ -52,7 +52,7 @@ export const uploadSlice = createSlice({
       .addCase(uploadImage.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        state.images = action.payload;
+        state.images.push(...action.payload);
       })
       .addCase(uploadImage.rejected, (state, action) => {
         state.isLoading = false;
@@ -66,7 +66,6 @@ export const uploadSlice = createSlice({
       .addCase(deleteImage.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log("action.payload: ", action.payload);
         const deletedImageId = action.meta.arg;
         state.images = state.images.filter(
           (img: any) => img.public_id !== deletedImageId
