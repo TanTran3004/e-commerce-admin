@@ -21,7 +21,7 @@ import AddColor from "./pages/Addcolor";
 import AddCat from "./pages/Addcat";
 import AddBrand from "./pages/Addbrand";
 import AddProduct from "./pages/AddProduct";
-
+import "react-widgets/styles.css";
 const App: React.FC = () => {
   return (
     <Router>
